@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AES File Encrypt/Decrypt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #d6c9f0, #fddde6);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header {
+      text-align: center;
+      margin: 40px 20px 10px;
+    }
+
+    .header h2 a {
+      text-decoration: none;
+      color: #5a189a;
+    }
+
+    .header h2 {
+      margin: 8px 0;
+      color: #4c0070;
+    }
+
+    .header img {
+      margin: 10px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .container {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 30px rgba(123, 0, 255, 0.2);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 420px;
+      width: 90%;
+      margin: 30px 0;
+    }
+
+    .container h2 {
+      text-align: center;
+      color: #6a0dad;
+      margin-bottom: 24px;
+    }
+
+    input[type="file"],
+    input[type="text"],
+    button {
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      border: 1px solid #d0bdf4;
+    }
+
+    input[type="text"] {
+      background-color: #f8f4ff;
+      border: 1px solid #cba0f9;
+    }
+
+    input[type="file"] {
+      background-color: #faf7ff;
+    }
+
+    button {
+      border: none;
+      color: white;
+      background-color: #7b2cbf;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background-color: #5a189a;
+    }
+
+    button:last-of-type {
+      background-color: #480ca8;
+    }
+
+    button:last-of-type:hover {
+      background-color: #3c096c;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+
+      .header img {
+        width: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>
+      <a href="https://dainam.edu.vn/vi/khoa-cong-nghe-thong-tin">
+        🎓 Faculty of Information Technology (DaiNam University)
+      </a>
+    </h2>
+    <h2>CRYPTOGRAPHY AND CYBER SECURITY</h2>
+    <p>
+      <img src="images.png" alt="AIoTLab Logo" width="140"/>
+      <img src="486643036_1189777543149102_27833471534785857_n.jpg" alt="FITDNU Logo" width="150"/>
+      <img src="logo-truong-dai-hoc-dai-nam.jpg" alt="DaiNam University Logo" width="160"/>
+    </p>
+  </div>
+
+  <div class="container">
+    <h2>AES-128 Encryption Tool</h2>
+    <input type="file" id="file" />
+    <input type="text" id="key" placeholder="Enter your AES key..." />
+    <button onclick="encrypt()">🔐 Encrypt</button>
+    <button onclick="decrypt()">🔓 Decrypt</button>
+  </div>
+
+  <script>
+    async function process(url) {
+      const fileInput = document.getElementById("file");
+      const keyInput = document.getElementById("key");
+
+      if (!fileInput.files.length || !keyInput.value.trim()) {
+        alert("Please select a file and enter a key.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      formData.append("key", keyInput.value);
+
+      const response = await fetch(url, { method: "POST", body: formData });
+
+      if (!response.ok) {
+        alert("Error: " + (await response.text()));
+        return;
+      }
+
+      const blob = await response.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = url.includes("encrypt") ? "encrypted.aes" : "decrypted.txt";
+      a.click();
+    }
+
+    function encrypt() {
+      process("/encrypt");
+    }
+
+    function decrypt() {
+      process("/decrypt");
+    }
+  </script>
+
+</body>
+</html>
